@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>电商网站</title>
+	<link rel="stylesheet" href="css/reset.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	<link rel="shortcut icon" href="img/100du.ico" />
+	<script src="js/jquery-1.11.0.min.js"></script>
+	<script src="js/DD_belatedPNG_0.0.8a.js"></script>
+	<script>
+		$(function(){
+
+			//搜索切换
+			(function(){
+				var arrText=[
+				'例如：荷塘鱼坊烤鱼 或 樱花日本料理',
+				'例如：昌平区育新站龙旗广场2号楼609室',
+				'例如：万达影院双人情侣券',
+				'例如：东莞出大事了，大老虎是谁',
+				'例如：北京初春降雪，天气变幻莫测'
+				];
+				var iNow=0;
+				$('#menu>li').each(function(index){
+					$(this).click(function(){
+						iNow=index;
+						$('#menu>li').attr('class','');
+						$(this).attr('class','active');
+						$('#form1 .text').val(arrText[index]);
+					});
+				});
+				$('#form1 .text').focus(function(){
+					if($(this).val()==arrText[iNow]){
+						$(this).val('');
+					}
+				});
+				$('#form1 .text').blur(function(){
+					if($(this).val()==''){
+						$(this).val(arrText[iNow]);
+					}
+				});
+			})();
+
+			//update文字滚动
+			(function(){
+				var oUl=$('.update ul');
+				var arrData=[
+					{'name':'萱萱','time':5,'title':'那些灿烂华美的瞬间1','url':'http://www.baidu.com'},
+					{'name':'萱萱','time':6,'title':'那些灿烂华美的瞬间2','url':'http://www.baidu.com'},
+					{'name':'萱萱','time':7,'title':'那些灿烂华美的瞬间3','url':'http://www.baidu.com'},
+					{'name':'萱萱','time':8,'title':'那些灿烂华美的瞬间4','url':'http://www.baidu.com'},
+					{'name':'萱萱','time':9,'title':'那些灿烂华美的瞬间5','url':'http://www.baidu.com'},
+					{'name':'萱萱','time':10,'title':'那些灿烂华美的瞬间6','url':'http://www.baidu.com'},
+					{'name':'萱萱','time':11,'title':'那些灿烂华美的瞬间7','url':'http://www.baidu.com'},
+					{'name':'萱萱','time':12,'title':'那些灿烂华美的瞬间8','url':'http://www.baidu.com'}
+				];
+				var str='';
+				for(var i=0;i<arrData.length;i++){
+					str+='<li><a href="'+arrData[i].url+'"><strong>'+arrData[i].name+'</strong><span>'+arrData[i].time+'分钟前</span>写了一篇新文章:'+arrData[i].title+'</a></li>';
+				};
+				oUl.html(str);
+				var iH=oUl.find('li').height();
+				var oUp=$('#upBtn');
+				var oDown=$('#downBtn');
+				var iNow=0;
+				var timer=null;
+				oUp.click(function(){
+					domove(-1);
+				});
+				oDown.click(function(){
+					domove(1);
+				});
+				function domove(num){
+					iNow+=num;
+					if(Math.abs(iNow)>arrData.length-1){
+						iNow=0;
+					}
+					if(iNow>0){
+						iNow=-(arrData.length-1);
+					}
+					oUl.stop().animate({'top':iNow*iH},1000);					
+				}
+				$('.update').eq(0).hover(function(){
+					clearInterval(timer);
+				},function(){
+					autoPlay();
+				});
+
+				function autoPlay(){
+					timer=setInterval(function(){
+						domove(-1);
+					},1500);
+				}
+				autoPlay();
+			})();
+
+			//选项卡切换
+			(function(){
+				fnTab($('.tabNav1'),$('.tabCon1'));
+				fnTab($('.tabNav2'),$('.tabCon2'));
+				fnTab($('.tabNav3'),$('.tabCon3'));
+				fnTab($('.tabNav4'),$('.tabCon4'));
+				function fnTab(nav,con){
+					var aEle=nav.children();
+					con.hide().eq(0).show();
+					aEle.each(function(index){
+						$(this).click(function(){
+							aEle.removeClass('active').addClass('gradient').eq(index).removeClass('gradient').addClass('active');
+							aEle.find('a').attr('class','triangle_down_gray').eq(index).attr('class','triangle_down_red');
+							con.hide().eq(index).show();
+						});
+					});
+				}
+			})();
+
+			//焦点图
+			(function(){
+				var oDiv=$('#fade');
+				var aUlLi=oDiv.find('ul li');
+				var aOlLi=oDiv.find('ol li');
+				var oP=oDiv.find('p');
+				var arr=['爸爸去哪儿~','人像摄影中的光影感','娇柔妩媚，美艳大方'];
+				var iNow=0;
+				var timer=null;
+				fnFade();
+				autoPlay();
+				aOlLi.each(function(index){
+					$(this).click(function(){
+						iNow=index;
+						fnFade();
+					});
+				});
+				oDiv.hover(function(){clearInterval(timer);},autoPlay);
+				function autoPlay(){
+					timer=setInterval(function(){
+						iNow++;
+						iNow%=arr.length;
+						fnFade();
+					},2000);
+				}
+				function fnFade(){
+					aUlLi.each(function(i){
+						if(i!=iNow){
+							aOlLi.eq(i).removeClass('active');
+							$(this).fadeOut().css('zIndex',1);
+						}else{
+							aOlLi.eq(i).addClass('active');
+							$(this).fadeIn().css('zIndex',2);
+						}
+					});
+					oP.text(arr[iNow]);
+				}
+			})();
+
+			//日历提示
+			(function(){
+				var aSpan=$('.calendar h3 span');
+				var aImg=$('.calendar .img');
+				var oPrompt=$('.today_info');
+				var oImg=oPrompt.find('img');
+				var oStrong=oPrompt.find('strong');
+				var oP=oPrompt.find('p');
+				aImg.hover(function(){
+					var oLeft=$(this).parent().position().left+55;
+					var oTop=$(this).parent().position().top-40;
+					var num=$(this).parent().index()%7;
+					oPrompt.show().css({
+						'top':oTop,
+						'left':oLeft
+					});
+					oImg.attr('src',$(this).attr('src'));
+					oStrong.text(aSpan.eq(num).text());
+					oP.text($(this).attr('info'));
+				},function(){
+					oPrompt.hide();
+				});
+			})();
+
+			//BBS
+			(function(){
+				$('.bbs ol li').mouseenter(function(){
+					$('.bbs ol li').removeClass('active');
+					$(this).addClass('active');
+				});
+			})();
+
+			//HOT图片
+			(function(){
+				var arr=[
+					{'name':'用户1','place':'朝阳','peo':1},
+					{'name':'用户1','place':'朝阳','peo':1},
+					{'name':'哆啦A梦','place':'朝阳','peo':12321},
+					{'name':'用户3','place':'朝阳','peo':3},
+					{'name':'用户4','place':'朝阳','peo':4},
+					{'name':'用户5','place':'朝阳','peo':5},
+					{'name':'用户6','place':'朝阳','peo':6},
+					{'name':'用户7','place':'朝阳','peo':7},
+					{'name':'用户8','place':'朝阳','peo':8},
+					{'name':'用户9','place':'朝阳','peo':9},
+					{'name':'用户10','place':'朝阳','peo':10}
+				];
+				$('.hot_area li').hover(function(){
+					if($(this).index()==0)return;
+					$(this).append('<div class="info"><p>'+arr[$(this).index()].name+'<br>'+arr[$(this).index()].place+'<br>'+arr[$(this).index()].peo+'</p></div>');
+				},function(){
+					$(this).find('.info').remove();
+				});
+
+			})();
+		})
+	</script>
+	<!--[if IE 6]>
+		<script>
+			DD_belatedPNG.fix('*');
+		</script>
+	<![endif]-->
+</head>
+<body>
+
+	<div id="header" class="gradient">
+		<p class="city">切换城市：
+			<a href="#" class="active">北京</a>
+			<a href="#">北京</a>
+			<a href="#">北京</a>
+			<a href="#">北京</a>
+			<a href="#">北京</a>
+		</p>
+		<p class="link">
+			<a href="#" class="ico1">加盟100度</a>丨
+			<a href="#" class="ico2">店铺管理</a>
+		</p>
+	</div>
+
+	<div id="nav">
+		<ul class="nav_1">
+			<li><a class="bg1" href="#">美食</a></li>
+			<li><a class="bg2" href="#">美食</a></li>
+			<li><a class="bg3" href="#">美食</a></li>
+			<li><a class="bg4" href="#">美食</a></li>
+			<li><a class="bg5" href="#">美食</a></li>
+		</ul>
+		<h1><a href="#"><img src="img/logo.png" alt="logo"></a></h1>
+		<ul class="nav_2">
+			<li><a class="bg6" href="#">美食</a></li>
+			<li><a class="bg7" href="#">美食</a></li>
+			<li><a class="bg8" href="#">美食</a></li>
+			<li><a class="bg9" href="#">美食</a></li>
+			<li><a class="bg10" href="#">美食</a></li>
+		</ul>
+	</div>
+
+	<div id="search" class="gradient">
+		<div class="img"></div>
+		<div class="bar">
+			<ul class="menu" id="menu">
+				<li class="active">搜点</li>
+				<li>地址</li>
+				<li>优惠券</li>
+				<li>全文</li>
+				<li>视频</li>
+			</ul>
+		</div>
+		<div class="form" id="form1">
+			<form action="#">
+				<input class="text" type="text" value="例如：荷塘鱼坊烤鱼 或 樱花日本料理" />
+				<input class="btn" type="submit" value="" />
+			</form>
+		</div>
+		<p class="key_text"><a href="#">金钱豹</a>、<a href="#">大江南</a>、<a href="#">湘水之珠</a>、<a href="#">德玉楼</a>、<a href="#">荷塘鱼坊烤鱼</a>、<a href="#">SOHO尚都</a>、<a href="#">湘味楼</a>...</p>
+		<div class="update">
+			<div class="wrap">
+				<ul>
+				</ul>				
+			</div>
+			<a id="upBtn" class="triangle_up" href="javascript:;"></a>
+			<a id="downBtn" class="triangle_down_red" href="javascript:;"></a>
+		</div>
+	</div>
+
+	<div class="content clear">
+
+		<div class="main fl">
+
+			<div class="main_wrap clear">
+
+				<div class="section fl">
+					<h2 class="video_title">WHAT<sup>'</sup> HOT</h2>
+					<div class="video"><img src="img/play_bg.gif" alt=""></div>
+					<ul class="video_list">
+						<li><a href="#">视频实录：杭州机场系统崩溃</a></li>
+						<li><a href="#">视频实录：杭州机场系统崩溃</a></li>
+						<li><a href="#">视频实录：杭州机场系统崩溃</a></li>
+					</ul>
+				</div>
+
+				<div class="options fr">
+					<ul class="nav tabNav1 clear">
+						<li class="active fl">
+							<strong>HOT SHOP<span>红店铺</span></strong>
+							<a class="triangle_down_red" href="javascript:;"></a>
+						</li>
+						<li class="gradient fr">
+							<strong>NEW SHOP<span>新开张</span></strong>
+							<a class="triangle_down_gray" href="javascript:;"></a>
+						</li>
+					</ul>
+					<div class="con">
+						<div class="hot_list">
+							<ul class="tabCon1">
+								<li class="clear">
+									<div class="img fl"><a href="#"><img src="img/content/hot_list_pic1.gif" alt=""></a></div>
+									<div class="text fr">
+										<h3><a href="#">宇宙和涵珍园国际酒店</a></h3>
+										<p>
+											区域省：朝阳/CBD <br>
+											人均：180元 <br>
+											人气：12321
+										</p>
+									</div>
+								</li>
+								<li class="clear">
+									<div class="img fl"><a href="#"><img src="img/content/hot_list_pic1.gif" alt=""></a></div>
+									<div class="text fr">
+										<h3><a href="#">宇宙和涵珍园国际酒店</a></h3>
+										<p>
+											区域省：朝阳/CBD <br>
+											人均：180元 <br>
+											人气：12321
+										</p>
+									</div>
+								</li>
+								<li class="clear">
+									<div class="img fl"><a href="#"><img src="img/content/hot_list_pic1.gif" alt=""></a></div>
+									<div class="text fr">
+										<h3><a href="#">宇宙和涵珍园国际酒店</a></h3>
+										<p>
+											区域省：朝阳/CBD <br>
+											人均：180元 <br>
+											人气：12321
+										</p>
+									</div>
+								</li>							
+							</ul>
+							<ul class="tabCon1">
+								<li class="clear">
+									<div class="img fl"><a href="#"><img src="img/content/hot_list_pic2.gif" alt=""></a></div>
+									<div class="text fr">
+										<h3><a href="#">宇宙和涵珍园国际酒店</a></h3>
+										<p>
+											区域省：朝阳/CBD <br>
+											人均：180元 <br>
+											人气：12321
+										</p>
+									</div>
+								</li>
+								<li class="clear">
+									<div class="img fl"><a href="#"><img src="img/content/hot_list_pic2.gif" alt=""></a></div>
+									<div class="text fr">
+										<h3><a href="#">宇宙和涵珍园国际酒店</a></h3>
+										<p>
+											区域省：朝阳/CBD <br>
+											人均：180元 <br>
+											人气：12321
+										</p>
+									</div>
+								</li>
+								<li class="clear">
+									<div class="img fl"><a href="#"><img src="img/content/hot_list_pic2.gif" alt=""></a></div>
+									<div class="text fr">
+										<h3><a href="#">宇宙和涵珍园国际酒店</a></h3>
+										<p>
+											区域省：朝阳/CBD <br>
+											人均：180元 <br>
+											人气：12321
+										</p>
+									</div>
+								</li>							
+							</ul>
+							<a class="more" href="#"><img src="img/more.gif" alt=""></a>							
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="main_ad">
+				<a href="#"><img src="img/ad/ad1.jpg" alt="ad1"></a>
+			</div>
+
+			<div class="main_wrap clear">
+				<div class="activity fl">
+					<h2 class="new_title">
+						<strong>LUCKY YODAY</strong>
+						<span>每日活动</span>
+						<em>2014.2</em>
+					</h2>
+					<div class="con">
+						<div class="info">
+							<span class="mask"></span>
+							<div class="img">
+								<img src="img/content/today1.gif" alt="">
+							</div>
+							<div class="text">
+								<h3>
+									<em>07</em>
+									<em>18</em>
+									<span>本日主题：电商网站</span>
+								</h3>
+								<p>这里是商品的描述信息这里是商品的描述信息这里是商品的描述信息这里是商品的描述信息</p>
+							</div>
+						</div>
+						<div class="calendar">
+							<h3>
+								<span>MON</span>
+								<span>TUE</span>
+								<span>WED</span>
+								<span>THU</span>
+								<span>FRI</span>
+								<span>SAT</span>
+								<span>SUN</span>
+							</h3>
+							<ol class="clear">
+								<li class="normal">29</li>
+								<li class="normal">30</li>
+								<li>1</li>
+								<li>2</li>
+								<li>3
+									<img info="3号的商品信息" class="active" src="img/content/today1.gif" alt="">
+								</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+								<li>10</li>
+								<li>11</li>
+								<li>12</li>
+								<li>13</li>
+								<li>14</li>
+								<li>15</li>
+								<li>16</li>
+								<li>17
+									<img info="17号的商品信息" class="img" src="img/content/hot2.gif" alt="">
+								</li>
+								<li>18</li>
+								<li>19</li>
+								<li>20
+									<img info="20号的商品信息" class="img" src="img/content/hot5.gif" alt="">
+								</li>
+								<li>21</li>
+								<li>22</li>
+								<li>23</li>
+								<li>24</li>
+								<li>25
+									<img info="25号的商品信息" class="img" src="img/content/today2.gif" alt="">
+								</li>
+								<li>26</li>
+								<li>27</li>
+								<li>28</li>
+								<li>29
+									<img info="29号的商品信息" class="img" src="img/content/hot7.gif" alt="">
+								</li>
+								<li>30</li>
+								<li>31</li>
+								<li class="normal">1</li>
+								<li class="normal">2</li>
+								<li class="normal">3</li>
+								<li class="normal">4</li>
+								<li class="normal">5</li>
+								<li class="normal">6</li>
+								<li class="normal">7</li>
+								<li class="normal">8</li>
+								<li class="normal">9</li>	
+							</ol>
+							<div class="today_info">
+								<img src="img/content/today2.gif" alt="">
+								<div class="text">
+									<h4><strong>SAT</strong>本日主题</h4>
+									<p>这里是商品的描述信息这里是商品的描述信息这里是商品的描述信息</p>
+								</div>
+								<span></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="recommend fr">
+					<h2 class="new_title">
+						<strong>RECOMMEND</strong>
+						<span>精彩推荐</span>
+					</h2>
+					<div class="pic" id="fade">
+						<ul>
+							<li><a href="javascript:;"><img src="img/content/img1.gif" alt=""></a></li>
+							<li><a href="javascript:;"><img src="img/content/img2.gif" alt=""></a></li>
+							<li><a href="javascript:;"><img src="img/content/img3.gif" alt=""></a></li>
+						</ul>
+						<ol>
+							<li class="active"><a href="javascript:;"><img src="img/content/img1.gif" alt=""></a></li>
+							<li><a href="javascript:;"><img src="img/content/img2.gif" alt=""></a></li>
+							<li><a href="javascript:;"><img src="img/content/img3.gif" alt=""></a></li>
+						</ol>
+						<p></p>
+					</div>
+					<div class="info">
+						<ul>
+							<li>丨<a href="#">老店换新颜，丰泽园野田重张亮相...</a>
+							<span class="date">15/07/19</span>
+							</li>
+							<li>丨<a href="#">老店换新颜，丰泽园野田重张亮相...</a>
+							<span class="date">15/07/19</span>
+							</li>
+							<li>丨<a href="#">老店换新颜，丰泽园野田重张亮相...</a>
+							<span class="date">15/07/19</span>
+							</li>
+							<li>丨<a href="#">老店换新颜，丰泽园野田重张亮相...</a>
+							<span class="date">15/07/19</span>
+							</li>
+							<li>丨<a href="#">老店换新颜，丰泽园野田重张亮相...</a>
+							<span class="date">15/07/19</span>
+							</li>
+							<li>丨<a href="#">老店换新颜，丰泽园野田重张亮相...</a>
+							<span class="date">15/07/19</span>
+							</li>
+							<li>丨<a href="#">老店换新颜，丰泽园野田重张亮相...</a>
+							<span class="date">15/07/19</span>
+							</li>
+							<li>丨<a href="#">老店换新颜，丰泽园野田重张亮相...</a>
+							<span class="date">15/07/19</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="main_wrap clear">
+
+				<div class="options fl">
+					<ul class="nav tabNav2 clear">
+						<li class="active fl">
+							<strong>SUBWAY<span>地铁交通</span></strong>
+							<a class="triangle_down_red" href="javascript:;"></a>
+						</li>
+						<li class="gradient fr">
+							<strong>MAP<span>生活圈</span></strong>
+							<a class="triangle_down_gray" href="javascript:;"></a>
+						</li>
+					</ul>
+					<div class="con">
+						<img class="tabCon2" src="img/content/123.gif" alt="">
+						<img class="tabCon2" src="img/content/456.jpg" alt="">
+					</div>
+				</div>
+
+				<div class="section fr">
+					<div class="bbs">
+						<h2 class="main_title">
+							<strong>BBS<span>论坛</span></strong>
+							<a href="#"><img src="img/more.gif" alt=""></a>
+						</h2>
+						<ol>
+							<li  class="active">
+								<strong>01</strong>
+								<img src="img/content/bbs_img1.gif" alt="">
+								<a href="#">保你没见过的古怪餐厅</a>
+								<span>阿瑞斯</span>
+								<em>ONE</em>
+								<i>世说新语</i>
+							</li>
+							<li>
+								<strong>02</strong>
+								<img src="img/content/bbs_img1.gif" alt="">
+								<a href="#">保你没见过的古怪餐厅</a>
+								<span>阿瑞斯</span>
+								<em>ONE</em>
+								<i>世说新语</i>
+							</li>
+							<li>
+								<strong>03</strong>
+								<img src="img/content/bbs_img1.gif" alt="">
+								<a href="#">保你没见过的古怪餐厅</a>
+								<span>阿瑞斯</span>
+								<em>ONE</em>
+								<i>世说新语</i>
+							</li>
+							<li>
+								<strong>04</strong>
+								<img src="img/content/bbs_img1.gif" alt="">
+								<a href="#">保你没见过的古怪餐厅</a>
+								<span>阿瑞斯</span>
+								<em>ONE</em>
+								<i>世说新语</i>
+							</li>
+							<li>
+								<strong>05</strong>
+								<img src="img/content/bbs_img1.gif" alt="">
+								<a href="#">保你没见过的古怪餐厅</a>
+								<span>阿瑞斯</span>
+								<em>ONE</em>
+								<i>世说新语</i>
+							</li>
+							<li>
+								<strong>06</strong>
+								<img src="img/content/bbs_img1.gif" alt="">
+								<a href="#">保你没见过的古怪餐厅</a>
+								<span>阿瑞斯</span>
+								<em>ONE</em>
+								<i>世说新语</i>
+							</li>
+							<li>
+								<strong>07</strong>
+								<img src="img/content/bbs_img1.gif" alt="">
+								<a href="#">保你没见过的古怪餐厅</a>
+								<span>阿瑞斯</span>
+								<em>ONE</em>
+								<i>世说新语</i>
+							</li>
+						</ol>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="main_ad">
+				<a href="#"><img src="img/ad/ad1.jpg" alt="ad1"></a>
+			</div>
+
+			<div class="main_wrap clear">
+
+				<div class="section fl">
+					<h2 class="main_title">
+						<strong>LIFESTYLE ADVICE<span>知道分子</span></strong>
+						<a href="#"><img src="img/more.gif" alt=""></a>
+					</h2>
+					<div class="tab">
+						<ul class="tabNav3">
+							<li class="active">有人在问<a class="triangle_down_red" href="javascript:;"></a></li>
+							<li>有人知道<a class="triangle_down_gray" href="javascript:;"></a></li>
+							<li>热门问题<a class="triangle_down_gray" href="javascript:;"></a></li>
+						</ul>
+					</div>
+					<ul class="section_list tabCon3">
+						<li class="title">
+							<span class="col1">标题</span>
+							<span class="col2">状态</span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧0</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧0</a></span>
+							<span class="col2"><img src="img/ico2.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧0</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧0</a></span>
+							<span class="col2"><img src="img/ico2.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧0</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+					</ul>
+					<ul class="section_list tabCon3">
+						<li class="title">
+							<span class="col1">标题</span>
+							<span class="col2">状态</span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧1</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧1</a></span>
+							<span class="col2"><img src="img/ico2.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧1</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧1</a></span>
+							<span class="col2"><img src="img/ico2.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧1</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+					</ul>
+					<ul class="section_list tabCon3">
+						<li class="title">
+							<span class="col1">标题</span>
+							<span class="col2">状态</span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧2</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧2</a></span>
+							<span class="col2"><img src="img/ico2.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧2</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧2</a></span>
+							<span class="col2"><img src="img/ico2.gif" alt=""></span>
+						</li>
+						<li>
+							<span class="col1"><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧2</a></span>
+							<span class="col2"><img src="img/ico1.gif" alt=""></span>
+						</li>
+					</ul>
+					<div class="soso">
+						<form action="#">
+							<strong>搜搜谁知道:</strong>
+							<input class="text" type="text" value="输入关键词">
+							<input class="btn" type="submit" value="">
+						</form>
+					</div>
+				</div>
+
+				<div class="section fr">
+					<h2 class="main_title">
+						<strong>HOT<span>红人骚客</span></strong>
+						<a href="#"><img src="img/more.gif" alt=""></a>
+					</h2>
+					<div class="hot_area">
+						<ul>
+							<li><img src="img/content/hot1.gif" /></li>
+							<li><img src="img/content/hot2.gif" /></li>
+							<li>
+<!-- 								<div class="info">
+	<p>用户名：哆啦A梦<br>
+	区域：朝阳CBD<br>	
+	人气：12321</p>
+</div> -->
+								<img src="img/content/hot3.gif" />
+							</li>
+							<li><img src="img/content/hot4.gif" /></li>
+							<li><img src="img/content/hot5.gif" /></li>
+							<li><img src="img/content/hot6.gif" /></li>
+							<li><img src="img/content/hot7.gif" /></li>
+							<li><img src="img/content/hot8.gif" /></li>
+							<li><img src="img/content/hot9.gif" /></li>
+							<li><img src="img/content/hot10.gif" /></li>
+							<li><img src="img/content/hot11.gif" /></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="main_wrap clear">
+
+				<div class="section fl">
+					<h2 class="main_title">
+						<strong>HELP<span>在线帮助</span></strong>
+						<a href="#"><img src="img/more.gif" alt=""></a>
+					</h2>
+				</div>
+
+				<div class="section fr">
+					<h2 class="main_title">
+						<strong>100DU IN THE MEDIA<span>媒体声音</span></strong>
+						<a href="#"><img src="img/more.gif" alt=""></a>
+					</h2>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="side fr">
+			<div class="side_section loadin">
+				<h2 class="main_title gradient">
+					<strong>LOAD<span>登录</span></strong>
+				</h2>
+				<div class="load">
+					<form action="#">
+						<p><span>用户名：</span><input class="text" type="text"><input type="checkbox">记住我</p>
+						<p><span>密 码：</span><input class="pass" type="passward">
+						<input class="go" type="submit" value="登录"></p>
+					</form>
+					<p><a href="#">新用户注册</a><a href="#">忘记密码了</a></p>
+				</div>
+				
+			</div>
+			<div class="side_ad ad_border">
+				<a href="#"><img src="img/ad/ad2.jpg" alt="ad1"></a>
+			</div>
+			<div class="side_ad">
+				<a href="#"><img src="img/ad/ad3.jpg" alt="ad1"></a>
+			</div>
+			<div class="side_section">
+				<h2 class="main_title">
+					<strong>COUPONS<span>抢卷儿</span></strong>
+					<a href="#"><img src="img/more.gif" alt=""></a>
+				</h2>
+				<div class="tab">
+						<ul class="tabNav4">
+							<li class="active">人气<a class="triangle_down_red" href="javascript:;"></a></li>
+							<li>推荐<a class="triangle_down_gray" href="javascript:;"></a></li>
+							<li>最新<a class="triangle_down_gray" href="javascript:;"></a></li>
+						</ul>
+				</div>
+				<ul class="section_list tabCon4">
+					<li class="title">
+						<span class="col1">商店名</span>
+						<span class="col2">省</span>
+						<span class="col3">打印</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧0</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧0</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧0</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧0</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧0</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+				</ul>
+				<ul class="section_list tabCon4">
+					<li class="title">
+						<span class="col1">商店名</span>
+						<span class="col2">省</span>
+						<span class="col3">打印</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧1</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧1</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧1</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧1</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧1</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+				</ul>
+				<ul class="section_list tabCon4">
+					<li class="title">
+						<span class="col1">商店名</span>
+						<span class="col2">省</span>
+						<span class="col3">打印</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧2</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧2</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧2</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧2</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+					<li>
+						<span class="col1"><a href="#">这里随便写点什么吧2</a></span>
+						<span class="col2">12%</span>
+						<span class="col3">345</span>
+					</li>
+				</ul>
+			</div>
+			<div class="side_section tuijian">
+				<h2 class="main_title">
+					<strong>SHOP<span>今日推荐</span></strong>
+					<a href="#"><img src="img/more.gif" alt=""></a>
+				</h2>
+				<ul class="pic_list">
+					<li class="clear">
+						<div class="img fl"><a href="#"><img src="img/content/pic1.gif" alt=""></a></div>
+						<div class="text fr">
+							<h3><a href="#">汉莱国际美食百汇</a></h3>
+							<p>
+								口味：创意中餐 <br>
+								区域：朝阳/CBD
+							</p>
+						</div>
+					</li>
+					<li class="clear">
+						<div class="img fl"><a href="#"><img src="img/content/pic1.gif" alt=""></a></div>
+						<div class="text fr">
+							<h3><a href="#">汉莱国际美食百汇</a></h3>
+							<p>
+								口味：创意中餐 <br>
+								区域：朝阳/CBD
+							</p>
+						</div>
+					</li>
+					<li class="clear">
+						<div class="img fl"><a href="#"><img src="img/content/pic1.gif" alt=""></a></div>
+						<div class="text fr">
+							<h3><a href="#">汉莱国际美食百汇</a></h3>
+							<p>
+								口味：创意中餐 <br>
+								区域：朝阳/CBD
+							</p>
+						</div>
+					</li>
+					<li class="clear">
+						<div class="img fl"><a href="#"><img src="img/content/pic1.gif" alt=""></a></div>
+						<div class="text fr">
+							<h3><a href="#">汉莱国际美食百汇</a></h3>
+							<p>
+								口味：创意中餐 <br>
+								区域：朝阳/CBD
+							</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="side_section">
+				<h2 class="main_title">
+					<strong>360<sup>。</sup> SHOP<span>全景逛店</span></strong>
+					<a href="#"><img src="img/more.gif" alt=""></a>
+				</h2>
+				<div class="all_pic">
+					<a href="#"><img src="img/content/360.gif" alt=""></a>
+					<p>苹果雪梨排骨汤</p>
+				</div>
+			</div>
+			<div class="side_section">
+				<h2 class="main_title">
+					<strong>SHOP<span>折扣店</span></strong>
+					<a href="#"><img src="img/more.gif" alt=""></a>
+				</h2>
+				<ul class="pic_list">
+					<li class="clear">
+						<div class="img fl"><a href="#"><img src="img/content/pic1.gif" alt=""></a></div>
+						<div class="text fr">
+							<h3><a href="#">汉莱国际美食百汇</a></h3>
+							<p>
+								口味：创意中餐 <br>
+								区域：朝阳/CBD
+							</p>
+						</div>
+					</li>
+				</ul>
+				<ul class="section_list">
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+				</ul>
+			</div>
+			<div class="side_section">
+				<h2 class="main_title">
+					<strong>COUPONS<span>最新加盟</span></strong>
+					<a href="#"><img src="img/more.gif" alt=""></a>
+				</h2>
+				<ul class="pic_list clear">
+					<li class="fl">
+						<div class="img"><a href="#"><img src="img/content/pic1.gif" alt=""></a></div>
+						<div class="text">
+							<h3><a href="#">汉莱国际美食百汇</a></h3>
+							<p>
+								口味：创意中餐 <br>
+								区域：朝阳/CBD
+							</p>
+						</div>
+					</li>
+					<li class="fr">
+						<div class="img"><a href="#"><img src="img/content/pic1.gif" alt=""></a></div>
+						<div class="text">
+							<h3><a href="#">汉莱国际美食百汇</a></h3>
+							<p>
+								口味：创意中餐 <br>
+								区域：朝阳/CBD
+							</p>
+						</div>
+					</li>
+				</ul>
+				<ul class="section_list">
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+					<li><a href="#"><em>[<span>休闲</span>]</em>这里随便写点什么吧</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="footer"></div>
+
+</body>
+</html>

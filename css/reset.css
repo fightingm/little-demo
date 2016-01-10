@@ -1,0 +1,42 @@
+@charset"utf-8";
+/*CSS Document*/
+
+/*样式重置(reset)*/
+
+body,h1,h2,h3,h4,h5,h6,p,dl,dd,ul,ol,form,input,textarea,th,td,select{margin:0;padding: 0;}
+em,i{font-style: normal;}
+li{list-style: none;}
+a{text-decoration: none;}
+img{border:none;vertical-align: top;}
+table{border-collapse: collapse;}
+input,textarea{outline: none;}
+textarea{resize:none;overflow: auto;}
+body{font-size: 12px;font-family: "微软雅黑";}
+
+/*public*/
+
+.fl{float:left;}
+.fr{float:right;}
+.clear{zoom:1;}
+.clear:after{content:'';display: block;clear:both;}
+.gradient{
+	background: -moz-linear-gradient(top,#fff,#f8f8f8);
+	background: -webkit-linear-gradient(top,#fff,#f8f8f8);
+	background: -ms-linear-gradient(top,#fff,#f8f8f8);
+	background: linear-gradient(top,#fff,#f8f8f8);
+	-ms-filter:"progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#fff,endColorstr=#f8f8f8)";
+	+background: #f9f9f9;
+}
+.triangle_up,.triangle_down_red,.triangle_down_gray{position:absolute;width:0;height:0;overflow: hidden;
+border-left:4px solid transparent;border-right:4px solid transparent;
+_border-left:4px solid #fff;_border-right:4px solid #fff; }
+.triangle_up{border-bottom:4px solid #c00;}
+.triangle_down_red{border-top:4px solid #c00;}
+.triangle_down_gray{border-top:4px solid #c4bdbd;}
+
+.main_title{height:40px;line-height: 40px;position: relative;
+font-weight: normal;border-radius: 5px; }
+.main_title strong{color:#cc0d13;font-size: 12px;font-family:arial;}
+.main_title span{color:#000;}
+.main_title sup{position: absolute;top:-2px;left:18px;font-family:'宋体'; }
+.main_title a{position: absolute;top:15px;right:0;}
